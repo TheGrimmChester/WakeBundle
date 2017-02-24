@@ -1,0 +1,172 @@
+{% extends '::'~awhs.template~'/base_dashboard.html.twig' %}
+
+{% trans_default_domain "service" %}
+
+{% block title %} {{ app_name }} - My schedules{% endblock %}
+{% block navbarBrand %}<span style="font-size:20px"><span style="color: #d70909; ">W</span>ake <span
+            style="color: #d70909; ">O</span>n <span style="color: #d70909; ">W</span>an</span>{% endblock %}
+
+{% block menu_user_money %}{{ client.money }}{% endblock %}
+{% block menu_user_lastip %}{{ client.lastip }}{% endblock %}
+{% block sidebarMenuDashboardActive %} active{% endblock %}
+
+{% block fastNavigation %}{% endblock %}
+{% block pageHeader %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>
+                                Month
+                            </th>
+                            <th>
+                                Day
+                            </th>
+                            <th>
+                                Hour
+                            </th>
+                            <th>
+                                Minute
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for schedule in computer.schedules %}
+                            <tr>
+                                <td class="col-md-3">
+                                    {% if schedule.month == 1 %}
+                                        January
+                                    {% elseif schedule.month == 2 %}
+                                        February
+                                    {% elseif schedule.month == 3 %}
+                                        March
+                                    {% elseif schedule.month == 4 %}
+                                        April
+                                    {% elseif schedule.month == 5 %}
+                                        May
+                                    {% elseif schedule.month == 6 %}
+                                        June
+                                    {% elseif schedule.month == 7 %}
+                                        July
+                                    {% elseif schedule.month == 8 %}
+                                        August
+                                    {% elseif schedule.month == 9 %}
+                                        September
+                                    {% elseif schedule.month == 10 %}
+                                        October
+                                    {% elseif schedule.month == 11 %}
+                                        November
+                                    {% elseif schedule.month == 12 %}
+                                        December
+                                    {% else %}
+                                        All
+                                    {% endif %}
+                                    {#{{ schedule.month|replace({'*': 'All'}) }}#}
+                                </td>
+                                <td class="col-md-3">
+                                    {% if schedule.day == '0' %}
+                                        Sunday
+                                    {% elseif schedule.day == '1' %}
+                                        Monday
+                                    {% elseif schedule.day == '2' %}
+                                        Tuesday
+                                    {% elseif schedule.day == '3' %}
+                                        Wednesday
+                                    {% elseif schedule.day == '4' %}
+                                        Thursday
+                                    {% elseif schedule.day == '5' %}
+                                        Friday
+                                    {% elseif schedule.day == '6' %}
+                                        Saturday
+                                    {% else %}
+                                        All
+                                    {% endif %}
+                                    {#{{ schedule.day|replace({'*': 'All'}) }}#}
+                                </td>
+                                <td class="col-md-3">
+                                    {{ "%02d"|format(schedule.hour|replace({'*': 'All'})) }}
+                                </td>
+                                <td class="col-md-3">
+                                    {{ "%02d"|format(schedule.minute|replace({'*': 'All'})) }}
+                                </td>
+                                <td>
+                                    <button class="btn delete" rel="{{ schedule.id }}">Delete</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>
+                                Month
+                            </th>
+                            <th>
+                                Day
+                            </th>
+                            <th>
+                                Hour
+                            </th>
+                            <th>
+                                Minute
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{ form_start(form) }}
+                        {{ form_errors(form) }}
+
+                        <tr>
+                            <td class="col-md-3">
+                                {{ form_widget(form.month, { 'attr': {'class': 'form-control', 'placeholder': ''} }) }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ form_widget(form.day, { 'attr': {'class': 'form-control', 'placeholder': ''} }) }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ form_widget(form.hour, { 'attr': {'class': 'form-control', 'placeholder': ''} }) }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ form_widget(form.minute, { 'attr': {'class': 'form-control', 'placeholder': ''} }) }}
+                            </td>
+                            <td>
+                                <button class="btn" type="submit">Add</button>
+                            </td>
+                        </tr>
+                        {{ form_rest(form) }}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.row -->
+{% endblock %}
+
+{% block extendJsBottom %}
+    <script>
+        var BASE_URL = '{{ path('awhs_wake_computer_schedule_delete', {'computer_id': computer.id, 'schedule_id': '__schedule_id__'}) }}';
+        $(".delete").click(function () {
+            var schedule_id = $(this).attr('rel');
+            var url = BASE_URL;
+            url = url.replace("__schedule_id__", schedule_id);
+            $.get(url, function (data) {
+
+            });
+            $(this).parent().parent().remove();
+        });
+    </script>
+{% endblock %}

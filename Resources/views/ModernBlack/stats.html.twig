@@ -1,0 +1,90 @@
+{% extends '::'~awhs.template~'/base_dashboard.html.twig' %}
+
+{% trans_default_domain "service" %}
+
+{% block title %} {{ app_name }} - My schedules{% endblock %}
+{% block navbarBrand %}<span style="font-size:20px"><span style="color: #d70909; ">W</span>ake <span
+            style="color: #d70909; ">O</span>n <span style="color: #d70909; ">W</span>an</span>{% endblock %}
+
+{% block menu_user_money %}{{ client.money }}{% endblock %}
+{% block menu_user_lastip %}{{ client.lastip }}{% endblock %}
+{% block sidebarMenuDashboardActive %} active{% endblock %}
+
+{% block fastNavigation %}{% endblock %}
+{% block pageHeader %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body no-padding">
+                    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+                    <script type='text/javascript' src='https://www.google.com/jsapi'></script>
+                    <script type='text/javascript'>
+                        google.load('visualization', '1', {packages: ['gauge']});
+                        google.setOnLoadCallback(drawChart);
+
+                        function drawChart() {
+                            var data = google.visualization.arrayToDataTable([
+                                ['Label', 'Value'],
+                                ['CPU', 0],
+                                ['RAM', 0]
+                            ]);
+
+                            var options = {
+                                width: 400, height: 200,
+                                redFrom: 90, redTo: 100,
+                                yellowFrom: 75, yellowTo: 90,
+                                minorTicks: 5
+                            };
+
+                            var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+                            chart.draw(data, options);
+                        }
+                    </script>
+                    <div style="text-align:center">
+                        <div id='chart_div'></div>
+                    </div>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+    </div><!-- /.row -->
+{% endblock %}
+
+{% block extendJsBottom %}
+    <script>
+        window.setInterval(function () {
+            updateStats();
+        }, 10000);
+
+        function updateStats() {
+            $.getJSON('http://localhost:8181/full.json{#https://nicolasmeloni.ovh/app_dev.php/wow/computer/1-asus-maximus-v-extreme/stats/json#}', function (data) {
+                var items = [];
+                console.log(data);
+                $.each(data.CPU, function (key, value) {
+//                $('#contentHere').append(
+//                        $(document.createElement('li')).text(key + " : " + value)
+//                );
+                });
+
+                var data = google.visualization.arrayToDataTable([
+                    ['Label', 'Value'],
+                    ['CPU', data.CPU.Usage],
+                    ['RAM', ((data.Memory.Total - data.Memory.Free) * 100) / data.Memory.Total],
+                ]);
+
+                var options = {
+                    width: 400, height: 180,
+                    redFrom: 90, redTo: 100,
+                    yellowFrom: 75, yellowTo: 90,
+                    minorTicks: 5
+                };
+
+                var chart = new google.visualization.Gauge(document.getElementById('chart_div'));
+                chart.draw(data, options);
+
+            });
+        }
+
+    </script>
+{% endblock %}

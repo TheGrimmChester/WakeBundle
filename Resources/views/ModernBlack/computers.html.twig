@@ -1,0 +1,147 @@
+{% extends '::'~awhs.template~'/base_dashboard.html.twig' %}
+
+{% trans_default_domain "service" %}
+
+{% block title %} {{ app_name }} - My computers{% endblock %}
+{% block navbarBrand %}<span style="font-size:20px"><span style="color: #d70909; ">W</span>ake <span
+            style="color: #d70909; ">O</span>n <span style="color: #d70909; ">W</span>an</span>{% endblock %}
+
+{% block menu_user_money %}{{ client.money }}{% endblock %}
+{% block menu_user_lastip %}{{ client.lastip }}{% endblock %}
+{% block sidebarMenuDashboardActive %} active{% endblock %}
+
+{% block fastNavigation %}{% endblock %}
+{% block pageHeader %}{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Hostname/IP:Port
+                            </th>
+                            <th>
+                                MAC Address
+                            </th>
+                            {#  <th>
+                                  Status
+                              </th>#}
+                            <th></th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for computer in computers %}
+                            <tr>
+                                <td class="col-md-3">
+                                    {{ computer.name }}
+                                </td>
+                                <td class="col-md-3">
+                                    {{ computer.hostname }}:{{ computer.port }}
+                                </td>
+                                <td class="col-md-3">
+                                    {{ computer.mac }}
+                                </td>
+                                <td class="col-md-3">
+                                    <a href="{{ path('awhs_wake_computer_schedules', {computer_id: computer.id, computer_name: computer.name|lower|replace({' ': '-'})|url_encode}) }}">Schedules</a>
+                                    -
+                                    <a class="wake" onclick="return false;" rel="{{ computer.id }}"
+                                       data-name="{{ computer.name|lower|replace({' ': '-'})|url_encode }}"
+                                       href="{{ path('awhs_wake_computer_wake', {computer_id: computer.id, computer_name: computer.name|lower|replace({' ': '-'})|url_encode}) }}">Wake</a>
+                                </td>
+                                <td>
+                                    <button class="btn delete" rel="{{ computer.id }}">Delete</button>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+        </div><!-- /.col -->
+        <div class="col-md-12">
+            <div class="box">
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Hostname/IP
+                            </th>
+                            <th>
+                                MAC Address
+                            </th>
+                            <th>
+                                Port
+                            </th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {{ form_start(form) }}
+                        {{ form_errors(form) }}
+
+                        <tr>
+                            <td class="col-md-3">
+                                {{ form_widget(form.name, { 'attr': {'class': 'form-control', 'placeholder': 'Home Computer'} }) }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ form_widget(form.hostname, { 'attr': {'class': 'form-control', 'placeholder': ''} }) }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ form_widget(form.mac, { 'attr': {'class': 'form-control', 'placeholder': '00:00:00:00:00:00', 'pattern': '^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$'} }) }}
+                            </td>
+                            <td class="col-md-3">
+                                {{ form_widget(form.port, { 'attr': {'class': 'form-control', 'placeholder': '7'} }) }}
+                            </td>
+                            <td>
+                                <button class="btn" type="submit">Add</button>
+                            </td>
+                        </tr>
+                        {{ form_rest(form) }}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div><!-- /.row -->
+{% endblock %}
+
+{% block extendJsBottom %}
+    <script>
+        $(".delete").click(function () {
+            var computer_id = $(this).attr('rel');
+            var url = "computer/__computer_id__/delete";
+            url = url.replace("__computer_id__", computer_id);
+            $.get(url, function (data) {
+
+            });
+            $(this).parent().parent().remove();
+        });
+
+        $(".wake").click(function () {
+            $.notify("Processing...", "info");
+            var computer_id = $(this).attr('rel');
+            var computer_name = $(this).data("name");
+            var url = "computer/__computer_id__-__computer_name__/wake";
+            url = url.replace("__computer_id__", computer_id);
+            url = url.replace("__computer_name__", computer_name);
+            $.get(url, function (data) {
+                $.notify("Done!", "success");
+            }).fail(function () {
+                $.notify("Could not wake your computer.", "error");
+            });
+
+        });
+    </script>
+{% endblock %}
