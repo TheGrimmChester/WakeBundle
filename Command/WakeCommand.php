@@ -44,7 +44,7 @@ class WakeCommand extends ContainerAwareCommand
     {
         $this
             ->setName('computers:wake')
-            ->setDescription('Créer les crons');
+            ->setDescription('Cron to wake computers');
     }
 
     /**

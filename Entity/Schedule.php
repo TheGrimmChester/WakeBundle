@@ -90,9 +90,9 @@ class Schedule
     /**
      * @var string
      *
-     * @ORM\Column(name="weekday", type="string", length=255)
+     * @ORM\Column(name="weekday", type="string", length=255, nullable=true)
      */
-    //private $weekday;
+    private $weekday;
 
     /**
      * Get id
@@ -118,7 +118,7 @@ class Schedule
      * Set computer
      *
      * @param \AWHS\WakeBundle\Entity\Computer $computer
-     * @return Cron
+     * @return Schedule
      */
     public function setComputer(\AWHS\WakeBundle\Entity\Computer $computer)
     {
@@ -137,7 +137,7 @@ class Schedule
 
     /**
      * @param string $minute
-     * @return Cron
+     * @return Schedule
      */
     public function setMinute($minute)
     {
@@ -156,7 +156,7 @@ class Schedule
 
     /**
      * @param string $hour
-     * @return Cron
+     * @return Schedule
      */
     public function setHour($hour)
     {
@@ -175,7 +175,7 @@ class Schedule
 
     /**
      * @param string $day
-     * @return Cron
+     * @return Schedule
      */
     public function setDay($day)
     {
@@ -194,7 +194,7 @@ class Schedule
 
     /**
      * @param string $month
-     * @return Cron
+     * @return Schedule
      */
     public function setMonth($month)
     {
@@ -213,7 +213,7 @@ class Schedule
 
     /**
      * @param string $weekday
-     * @return Cron
+     * @return Schedule
      */
     public function setWeekday($weekday)
     {

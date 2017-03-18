@@ -1,4 +1,3 @@
 services:
     awhs_wake_api.wow:
         class: AWHS\WakeBundle\API\Wow
-#        arguments: [ "@doctrine.orm.entity_manager" ]

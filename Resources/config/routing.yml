@@ -19,12 +19,3 @@ awhs_wake_computer_schedule_delete:
 awhs_wake_computer_delete:
     path:     /computer/{computer_id}/delete
     defaults: { _controller: AWHSWakeBundle:Default:deleteComputer }
-awhs_wake_computer_stats:
-    path:     /computer/{computer_id}-{computer_name}/stats
-    defaults: { _controller: AWHSWakeBundle:Default:stats }
-awhs_wake_computer_stats_json:
-    path:     /computer/{computer_id}-{computer_name}/stats/json
-    defaults: { _controller: AWHSWakeBundle:Default:statsJson }
-awhs_wake_computer_stat_update:
-    path:     /{userKey}/computer/{computer_id}-{computer_name}/stats/update
-    defaults: { _controller: AWHSWakeBundle:Default:statsUpdate }

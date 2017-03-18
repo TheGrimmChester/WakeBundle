@@ -98,7 +98,7 @@ class Wow
 
     private function is_awake()
     {
-        $awake = @fsockopen($this->ip, 80, $errno, $errstr, 2);
+        $awake = @fsockopen(gethostbyname($this->computer->getHostname()), 80, $errno, $errstr, 2);
         if ($awake) {
             fclose($awake);
         }
